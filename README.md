@@ -6,7 +6,7 @@ A duct-taped Raycast extension that uses [dtinth/transcribe](https://github.com/
 
 ## Usage
 
-**Prerequisites:** Node.js, [Raycast](https://www.raycast.com/), [pnpm](https://pnpm.io/), [SoX](https://formulae.brew.sh/formula/sox), [transcribe](https://github.com/dtinth/transcribe)
+**Prerequisites:** Node.js, [Raycast](https://www.raycast.com/), [pnpm](https://pnpm.io/), [SoX](https://formulae.brew.sh/formula/sox), Xcode (to compile transcribe from source), [transcribe](https://github.com/dtinth/transcribe)
 
 Again, this project is duct-taped, and you will need to run several terminal tabs in the background. You will also need to clone this project into this specific path because the path is hardcoded: `~/Raycast/Extensions/what-you-said`
 
