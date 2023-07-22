@@ -60,7 +60,7 @@ export default function Command() {
     <List
       isLoading={!result}
       // onSearchTextChange={setSearchText}
-      searchBarPlaceholder="Press enter to copy the transcription"
+      searchBarPlaceholder="Press enter to paste into frontmost application"
       throttle
       isShowingDetail
     >
