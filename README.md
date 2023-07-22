@@ -4,6 +4,19 @@ A duct-taped Raycast extension that uses [dtinth/transcribe](https://github.com/
 
 ![Screenshot](screenshot.png)
 
+## How it works
+
+The solution consists of several tools that are duct taped together
+
+![image](https://github.com/dtinth/what-you-said/assets/193136/ad54b57d-89da-46ea-bae8-ff4fffb6e7b8)
+
+- [SoX](https://sox.sourceforge.net/) is used to receive microphone input, and encode as PCM data
+- [dtinth/transcribe](https://github.com/dtinth/transcribe) is used to perform speech recognition using Apple’s [SFSpeechRecognizer](https://developer.apple.com/documentation/speech/sfspeechrecognizer) API
+- `scripts/writer.mjs` sends the speech recognition result to the server
+- `scripts/server.mjs` receives the speech recognition result and forwards it to the Raycast extension
+- The Raycast extension talks to the server to poll for the latest speech recognition result and renders a UI
+- Raycast take care of launching the extension and actually performing the actions, such as copy to clipboard and paste into the frontmost window
+
 ## Usage
 
 **Prerequisites:** Node.js, [Raycast](https://www.raycast.com/), [pnpm](https://pnpm.io/), [SoX](https://formulae.brew.sh/formula/sox), Xcode (to compile transcribe from source), [transcribe](https://github.com/dtinth/transcribe)
