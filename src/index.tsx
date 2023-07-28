@@ -3,6 +3,7 @@ import fetch, { Response } from "node-fetch";
 import { atom, onMount } from "nanostores";
 import { useStore } from "@nanostores/react";
 import { readFileSync } from "fs";
+import { postprocessText } from "./postprocessText";
 
 const secretPath = process.env.HOME + "/Raycast/Extensions/what-you-said/.data/secret.txt";
 const secret = readFileSync(secretPath, "utf8").trim();
@@ -66,7 +67,7 @@ export default function Command() {
     >
       <List.Section title="What you said">
         {!!result &&
-          candidates(result.text).map((text) => (
+          candidates(postprocessText(result.text)).map((text) => (
             <List.Item
               title={text}
               subtitle={relativeTime(data.time)}
