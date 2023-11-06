@@ -36,6 +36,7 @@ onMount($transcription, () => {
     }
     while (!unmounted) {
       await new Promise((resolve) => setTimeout(resolve, 100));
+      if (unmounted) break;
       try {
         const response = await fetch("http://127.0.0.1:7826/poll?time=" + encodeURIComponent(time), {
           headers: {
@@ -55,22 +56,30 @@ onMount($transcription, () => {
 
 export default function Command() {
   const data = useStore($transcription);
-  const result = data?.result;
+  const results: TranscriptionResult[] = [];
+
+  if (data?.result) {
+    results.push(data.result);
+  }
+  if (data?.resultTh) {
+    results.push(data.resultTh);
+  }
 
   return (
     <List
-      isLoading={!result}
+      isLoading={!results.length}
       // onSearchTextChange={setSearchText}
       searchBarPlaceholder="Press enter to paste into frontmost application"
       throttle
       isShowingDetail
     >
       <List.Section title="What you said">
-        {!!result &&
-          candidates(postprocessText(result.text)).map((text) => (
+        {results.flatMap((result, index) =>
+          candidates(postprocessText(result.text)).map((text, j) => (
             <List.Item
+              key={index + "-" + j}
               title={text}
-              subtitle={relativeTime(data.time)}
+              subtitle={relativeTime(data!.time)}
               actions={
                 <ActionPanel>
                   <ActionPanel.Section>
@@ -86,14 +95,16 @@ export default function Command() {
               }
               detail={<List.Item.Detail markdown={toMarkdown(result, text)} />}
             />
-          ))}
+          ))
+        )}
       </List.Section>
     </List>
   );
 }
 
 interface TranscriptionResponse {
-  result: TranscriptionResult;
+  result?: TranscriptionResult;
+  resultTh?: TranscriptionResult;
   time: string;
 }
 interface TranscriptionResult {
@@ -116,19 +127,19 @@ function candidates(text: string): string[] {
   // With first letter converted into lower case
   result.add(text.replace(/^[A-Z]/, (a) => a.toLocaleLowerCase()));
 
-  if (text.length < 32) {
-    const pascal = text.replace(/\s+(\S)/g, (a, x) => x.toLocaleUpperCase()).replace(/ID/g, "Id");
-    result.add(pascal);
+  // if (text.length < 32) {
+  //   const pascal = text.replace(/\s+(\S)/g, (a, x) => x.toLocaleUpperCase()).replace(/ID/g, "Id");
+  //   result.add(pascal);
 
-    const camel = pascal.replace(/^[A-Z]/, (a) => a.toLocaleLowerCase());
-    result.add(camel);
+  //   const camel = pascal.replace(/^[A-Z]/, (a) => a.toLocaleLowerCase());
+  //   result.add(camel);
 
-    const kebab = camel.replace(/[A-Z]/g, (a) => "-" + a.toLocaleLowerCase());
-    result.add(kebab);
+  //   const kebab = camel.replace(/[A-Z]/g, (a) => "-" + a.toLocaleLowerCase());
+  //   result.add(kebab);
 
-    const snake = camel.replace(/[A-Z]/g, (a) => "_" + a.toLocaleLowerCase());
-    result.add(snake);
-  }
+  //   const snake = camel.replace(/[A-Z]/g, (a) => "_" + a.toLocaleLowerCase());
+  //   result.add(snake);
+  // }
 
   return Array.from(result);
 }
